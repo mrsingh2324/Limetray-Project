@@ -4,8 +4,8 @@ import axios from 'axios';
 
 const Items = () => {
 
-    const server = 'http://localhost:5000'; // Backend server
-
+const server = process.env.NODE_ENV === 'production' ? 'https://limetray-backend.onrender.com' : 'http://localhost:5000';
+    
     const itemsList = [
         { id: 1, name: 'Item 1', price: 100 },
         { id: 2, name: 'Item 2', price: 200 },
