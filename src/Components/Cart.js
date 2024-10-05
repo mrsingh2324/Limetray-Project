@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-  const server = 'http://localhost:5000';
+const server = process.env.NODE_ENV === 'production' ? 'https://limetray-backend.onrender.com' : 'http://localhost:5000';
 
   useEffect(() => {
     const fetchCartItems = async () => {
