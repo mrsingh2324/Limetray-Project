@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import '../styles/spinner.css';
 const Items = () => {
-
+    const [loading, setLoading] = useState(false); // State to manage loading spinner
     const server = process.env.NODE_ENV === 'production' ? 'https://limetray-backend.onrender.com' : 'http://localhost:5000';
 
     const itemsList = [
@@ -13,6 +15,7 @@ const Items = () => {
     ];
 
     const addToCart = async (item) => {
+        setLoading(true); // Start the loader
         try {
             const existingItem = await axios.get(`${server}/cart/${item.id}`);
 
@@ -23,7 +26,7 @@ const Items = () => {
                 };
                 const response = await axios.put(`${server}/cart/${item.id}`, updatedItem);
                 console.log('Cart Updated (Incremented Quantity):', response.data);
-                alert('Quantity updated in cart');
+                toast.success('Quantity updated in cart'); // Success toast
             }
         } catch (error) {
             if (error.response && error.response.status === 404) {
@@ -31,15 +34,17 @@ const Items = () => {
                     const newItem = { ...item, quantity: 1 };
                     const response = await axios.post(`${server}/cart`, newItem);
                     console.log('Item Added to Cart:', response.data);
-                    alert('Item added to cart')
+                    toast.success('Item added to cart'); // Success toast
                 } catch (postError) {
                     console.error('Error adding new item:', postError);
-                    alert('Error adding the item to the cart');
+                    toast.error('Error adding the item to the cart'); // Error toast
                 }
             } else {
                 console.error('Error adding/updating item:', error);
-                alert('Error adding or updating the cart');
+                toast.error('Error adding or updating the cart'); // Error toast
             }
+        } finally {
+            setLoading(false); // Stop the loader
         }
     };
 
@@ -54,13 +59,21 @@ const Items = () => {
                         <p className="text-gray-500 mb-4">Rs. {item.price}</p>
                         <button
                             onClick={() => addToCart(item)}
-                            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition duration-300"
+                            className={`w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            disabled={loading} // Disable button when loading
                         >
-                            Add to Cart
+                            {loading ? (
+                                <span className="loader"></span> // Display spinner while loading
+                            ) : (
+                                'Add to Cart'
+                            )}
                         </button>
                     </div>
                 ))}
             </div>
+
+            {/* Toast container for displaying notifications */}
+            <ToastContainer />
         </div>
     );
 };

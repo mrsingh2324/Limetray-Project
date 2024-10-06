@@ -76,7 +76,7 @@ const Cart = () => {
                       +
                     </button>
                     <button
-                      className='bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600'
+                      className='bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600'
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       disabled={item.quantity <= 1} // Disable if quantity <= 1
                     >
